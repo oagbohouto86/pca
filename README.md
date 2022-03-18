@@ -11,3 +11,8 @@ Even if there are more other ways to speed up machine learning algorithm, one so
 The principal components extract from PCA include most important features from the dataset that are responsible for maximum variance in the output.
 
 _Note: PCA method is used only with quantitative variable. In case of qualitative or categorial variable, recommended algorithm is Multiple Correspondance Analysis (MCA).
+
+# requirements
+Python : numpy, scipy, sklearn and other librairies present in the script
+
+r 4.1.3
