@@ -1,0 +1,110 @@
+---
+title: "pca"
+author: "AGBOHOUTO OMRAAM OLIVIER"
+date: "11/02/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+library(MASS)
+library(klaR)
+library(class)
+library(factoextra)
+library(labelled)
+library(Hmisc)
+library(FactoMineR)
+library(DescTools)
+library(corrplot)
+```
+
+## Dataset
+
+We will use the popular $\texttt{iris}$ dataset to perform this pca. We know that PCA can be used for dimensionality reduction, resolve multicolinearity of feature or  feature extraction and other task.
+The principal goal of this work is to show how PCA can be used for data classification.
+
+```{r}
+library(datasets)
+data("iris")
+data=iris
+```
+
+## Data exploration
+
+```{r}
+head(data)
+```
+
+```{r}
+summary(data)
+```
+Our dataset contains 150 iris flower of three differents species. Each iris is described by four numeric features. The fifth feature is the specie of iris flower. All explicatives variables are quantitative.
+
+```{r}
+datacor <- cor(data[,-5],method="spearman")#Spearman test robuste
+datacor
+corrplot(as.matrix(datacor), method='color', addCoef.col = "black", type="lower", order="hclust", tl.col="black", tl.srt=45,title='Matrice de corrélation')
+```
+$\texttt{Petal_width}$, $\texttt{Petal_width}$ and $\texttt{Sepal_length}$ are correlated.
+
+## PCA
+
+### Step 1 and 2: Data standardization and model fitting
+PCA need data standardization before fitting model. Standardization is done by passing $\texttt{center=TRUE}$ and $\texttt{scale=TRUE}$ in $\texttt{prcomp}$ function.
+```{r}
+data_pca <- prcomp(data[,-5],center = TRUE ,scale = TRUE)
+```
+
+## Results interpretation
+```{r}
+#Variance explained by each PC
+data_pca$sdev
+fviz_eig(data_pca)
+```
+The scree plot above suggested to retain the two first dimensions which explain about 95% of data variation. So we can retain PC1 and PC2 to create our new dataset from raw iris data. This dataset will be shape of 150,2
+
+```{r}
+#Principal components
+data_pca$x[,1]
+data_pca$x[,2]
+```
+
+This is the main interesting part.
+```{r}
+##Variable representation using dimension 1 and 2
+var12<-fviz_pca_var(data_pca, axes=c(1,2),col.var = "contrib", 
+                  gradient.cols = c("red", "blue"), repel = TRUE )
+plot(var12)
+```
+```{r}
+##Representation of individus in PC1 and PC2 dimensions
+individus12<-fviz_pca_ind(data_pca,axes=c(1,2),col.ind = "cos2",
+             gradient.cols = c("red", "blue"), repel = TRUE)
+plot(individus12)
+
+```
+
+These two graphics above represent variables and individus in 2D dimensions with PC1 and PC2. We can represent all together to better explain results. 
+```{r}
+library(devtools)
+library('ggbiplot')
+ggbiplot(data_pca, obs.scale = 1, var.scale = 1,
+  groups = data$Species, ellipse = TRUE, circle = TRUE,ellipse.prob = 0.68) +
+  scale_color_discrete(name = '') +
+  theme(legend.direction = 'horizontal', legend.position = 'top')
+```
+```{r}
+aggregate(data$Sepal.Length, list(data$Species), FUN=mean) 
+aggregate(data$Sepal.Width, list(data$Species), FUN=mean) 
+aggregate(data$Petal.Length, list(data$Species), FUN=mean) 
+aggregate(data$Petal.Width, list(data$Species), FUN=mean) 
+```
+This graphic combine representation of origin variable with individuals ie each iris flower in the 2Dimension instead of 4. With this visualization we can notice that _setosa_ specie is very far of the others species. This shows that PC1 and PC2 discriminate correctly the three species. Setosa is characterized by their hight sepal width and small Petal length compare to others species. 
+
+So, beyond allowing dimension reduction, feature extraction or accelerating machine learning algorithms, PCA can also be very useful for clustering, detecting groups of homogeneous individuals or data discrimination.
+
+
+
