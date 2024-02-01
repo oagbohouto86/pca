@@ -1,4 +1,7 @@
-# pca
+# Principal component Analysis (PCA)
+
+## Summary
+
 **Principal component Analysis (PCA)** is one of the most useful algorithm in dimension reduction. PCA is used to investigate multi dimensional data i.e data with huge number of explicative variables. \
 The goal of this method is to project the initial raw data on orthogonal factorial plans with less new variables, which maximize the variance of the projected data. In other words, PCA is used to convert a set of observations of possibly correlated variables into a set of values of linearly uncorrelated variables called principal components.\
 So, PCA is frequently used to represent the data in low dimension, to investigate the distribution of multi dimensional data, to discover features or clusters in the data.\
@@ -12,7 +15,7 @@ The principal components extract from PCA include most important features from t
 
 _Note: PCA method is used only with quantitative variable. In case of qualitative or categorial variable, recommended algorithm is Multiple Correspondance Analysis (MCA).
 
-# requirements
+## requirements
 Python : numpy, scipy, sklearn and other librairies present in the script
 
 r 4.1.3
